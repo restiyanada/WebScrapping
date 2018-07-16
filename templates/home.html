@@ -1,0 +1,132 @@
+<html>
+  <head>
+    <title>Scrapper</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/jquery-ui.js"></script>
+    <link rel="stylesheet" href="/static/css/jquery-ui.css">
+      <script src="/static/js/bootstrap.min.js"></script>
+
+    <style>
+        .hidden {
+                display: none;
+            }
+        .loader {
+          border: 16px solid #f3f3f3;
+          border-radius: 50%;
+          border-top: 16px solid #3498db;
+          width: 120px;
+          height: 120px;
+          -webkit-animation: spin 2s linear infinite;
+          animation: spin 2s linear infinite;
+        }
+         @-webkit-keyframes spin {
+          0% { -webkit-transform: rotate(0deg); }
+          100% { -webkit-transform: rotate(360deg); }
+        }
+
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+    </style>
+      <script>
+        $(document).ready(function () {
+
+             $("#download").click(function(e){
+                        e.preventDefault();
+                        $('#loaderID').removeClass('hidden');
+                        $('#resultDiv').removeClass('hidden');
+                        $('#result').empty();
+                        var data = new FormData(jQuery('form')[0]);
+
+                            $.ajax({
+                            url: '/download',
+                            type: 'POST',
+                            contentType:false,
+                            cache: false,
+                            processData: false,
+                            // pass the form in the FormData constructor to send all the data inside the form
+                            data: data,
+                            success: function(data) {
+                                $('#loaderID').addClass('hidden');
+
+                                $('#result').empty();
+                                $('#result').append(data.result);
+                                $('#download_file_id').attr("href", "/return-files");
+                                $('#download_file_id').removeClass('hidden');
+                            },
+                            error: function(xhr, result, errorThrown){
+                                $('#loaderID').addClass('hidden');
+                                $('#result').empty();
+                                $('#result').append(result);
+                            }
+                        });
+                });
+        });
+    </script>
+  </head>
+
+  <body>
+  <div class="container">
+        <div class="row">
+            <div class="jumbotron">
+                <h1 class="blue" style="color:#2196F3;">Run Scrapper </h1>
+            </div>
+        </div>
+        <!--small cards-->
+        <div class="row">
+            <div class="col-md-10">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Provide inputs</div>
+                    <div class="panel-body">
+                        <div>
+                            <form class="form-horizontal" id="download_form" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="commit_url">Commit Url:</label>
+                                    <div class="col-sm-10">
+                                      <input type="text" class="form-control" id="commit_url" name="commit_url" placeholder="Enter Commit Url">
+                                    </div>
+                                  </div>
+                                  <div class="form-group">
+                                    <label class="control-label col-sm-2" for="issues_url">Issues URL:</label>
+                                    <div class="col-sm-10">
+                                      <input type="text" class="form-control" id="issues_url" name="issues_url" placeholder="Enter Issues URL">
+                                    </div>
+                                  </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="issues_url">Contrb URL:</label>
+                                    <div class="col-sm-10">
+                                      <input type="text" class="form-control" id="cntrb_url" name="cntrb_url" placeholder="Enter Contrb URL">
+                                    </div>
+                                  </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <button type="button" id="download" class="btn btn-success">Start</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      <div class="row hidden" id="resultDiv">
+            <div class="col-md-10">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Result (?)</div>
+                    <div class="panel-body">
+                        <div id="loaderID" class="loader hidden"></div>
+
+                        <div id="result"></div>
+                        <a class="btn btn-success hidden" id="download_file_id" href="/return-files/" target="blank">Download!</a>
+
+                    </div>
+                </div>
+            </div>
+
+    </body>
+
+</html>
